@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "crypto-js": "^4.2.0",
+    "dayjs": "^1.11.13",
     "lucide-react": "^0.511.0",
     "next": "15.3.3",
     "react": "^19.0.0",

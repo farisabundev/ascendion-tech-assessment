@@ -81,6 +81,7 @@ export default function LoginFlow() {
     const data = await res.json();
 
     if (res.ok) {
+      alert("Login successful")
       localStorage.setItem("token", token);
       router.push("/dashboard");
 
