@@ -3,10 +3,13 @@ import crypto from "crypto";
 import HttpStatusCode from "@/utils/HttpStatus";
 import redis from "@/libs/redis";
 
-const SECRET = "my-secret-key"; // TODO: Change to .env
-
 export async function POST(req: Request) {
+  const SECRET = process.env.SECRET;
   const { username } = await req.json();
+
+  if (!SECRET) {
+    throw new Error("SECRET environment variable is not set");
+  }
 
   if (!username) {
     return NextResponse.json(

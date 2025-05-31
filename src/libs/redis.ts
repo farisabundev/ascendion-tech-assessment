@@ -6,12 +6,34 @@ const redis = createClient({
 
 redis.on("error", (err) => console.error("[Redis] Redis Client Error: ", err));
 
-if (!redis.isOpen) {
-  redis.connect().then(() => {
-    console.log("[Redis] Connected");
-  });
+let isConnecting = false;
+
+async function ensureConnected() {
+  if (!redis.isOpen && !isConnecting) {
+    isConnecting = true;
+    await redis.connect();
+  }
 }
 
-if (!redis.isOpen) await redis.connect();
 
-export default redis;
+async function safeSet(...args: Parameters<typeof redis.set>) {
+  await ensureConnected();
+  return redis.set(...args);
+}
+
+async function safeGet(...args: Parameters<typeof redis.get>) {
+  await ensureConnected();
+  return redis.get(...args);
+}
+
+async function safeDel(...args: Parameters<typeof redis.del>) {
+  await ensureConnected();
+  return redis.del(...args);
+}
+
+// Export wrapped redis methods
+export default {
+  set: safeSet,
+  get: safeGet,
+  del: safeDel,
+};
